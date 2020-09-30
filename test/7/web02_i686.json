@@ -1,0 +1,1 @@
+["libcom_err", "elfutils-libs", "dbus-libs", "libuuid", "libcap", "libsss_idmap", "systemd-libs", "krb5-libs", "sssd-client", "libselinux", "rdma-core", "pam", "libsss_nss_idmap", "glibc", "elfutils-libelf", "nss-softokn-freebl"]

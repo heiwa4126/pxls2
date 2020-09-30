@@ -1,0 +1,1 @@
+["libcom_err", "expat-devel", "audit-libs", "libgcc", "dbus-libs", "libuuid", "libsss_idmap", "db4", "krb5-libs", "sssd-client", "libgcrypt", "nss-softokn", "libselinux", "expat", "pam", "libsss_nss_idmap", "nspr", "elfutils-libs", "libstdc++", "nss", "nss-util", "elfutils-libelf", "nss-softokn-freebl", "glibc"]
