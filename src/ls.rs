@@ -36,20 +36,32 @@ pub fn ls(search_path: &str) -> Result<Vec<String>, Box<dyn Error>> {
 mod tests {
     use super::*;
 
+    struct TestCase {
+        path: String,
+        wants: Vec<String>,
+    }
+
+    fn build_testcase(path: &str, wants: &[&str]) -> TestCase {
+        TestCase {
+            path: path.to_string(),
+            wants: wants.iter().map(|x| x.to_string()).collect(),
+        }
+    }
+
     #[test]
     fn test_ls() {
-        match ls("./test/1") {
-            Err(e) => panic!("{:?}", e),
-            Ok(files) => {
-                print!("{:#?}", files);
-                assert_eq!(files, vec!["c7", "host1", "R8"])
-            }
-        }
-        match ls("./test/7") {
-            Err(e) => panic!("{:?}", e),
-            Ok(files) => {
-                print!("{:#?}", files);
-                assert_eq!(files, vec!["R067", "web02"])
+        let cases = [
+            build_testcase("./test/1", &["c7", "host1", "R8"]),
+            build_testcase("./test/7////", &["R067", "web02"]),
+        ];
+
+        for case in cases.iter() {
+            match ls(&case.path) {
+                Err(e) => panic!("{:?}", e),
+                Ok(files) => {
+                    println!("{}: {:#?}", case.path, files);
+                    assert_eq!(files, case.wants)
+                }
             }
         }
     }
