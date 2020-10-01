@@ -76,3 +76,4 @@ Cargo.lock
 *.zip
 *.exe
 *.7z
+*.go
