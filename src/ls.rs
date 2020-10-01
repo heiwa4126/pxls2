@@ -1,7 +1,6 @@
-// use std::fs;
 extern crate glob;
+use anyhow::Result;
 use glob::glob;
-use std::error::Error;
 use std::ffi::OsStr;
 use std::path::Path;
 
@@ -12,20 +11,20 @@ pub fn host2file(host: &str, base: &str) -> String {
         .to_string();
 }
 
-pub fn ls(search_path: &str) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn ls(search_path: &str) -> Result<Vec<String>> {
     let mut files: Vec<String> = Vec::new();
 
     // pub fn glob(pattern: &str) -> Result<Paths, PatternError>
     for entry in glob(&(search_path.to_string() + "/*.json"))? {
         match entry {
-            Err(e) => return Err(Box::new(e)), // GlobError
+            Err(e) => return Err(e.into()), // GlobError
             Ok(path) => {
                 // println!("{:#?}", path);
                 let s = path
                     .file_stem()
                     .unwrap_or_else(|| OsStr::new(""))
                     .to_str()
-                    .unwrap_or("");
+                    .unwrap_or_else(|| "");
                 if !s.ends_with("_i686") {
                     files.push(s.to_string());
                 }
