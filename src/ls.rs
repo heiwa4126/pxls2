@@ -2,6 +2,7 @@
 extern crate glob;
 use glob::glob;
 use std::error::Error;
+use std::ffi::OsStr;
 use std::path::Path;
 
 pub fn host2file(host: &str, base: &str) -> String {
@@ -18,16 +19,19 @@ pub fn ls(search_path: &str) -> Result<Vec<String>, Box<dyn Error>> {
     for entry in glob(&(search_path.to_string() + "/*.json"))? {
         match entry {
             Err(e) => return Err(Box::new(e)), // GlobError
-            Ok(pathbuf) => {
-                let s = pathbuf.as_path().file_stem().unwrap().to_str().unwrap(); // raise panic!
+            Ok(path) => {
+                // println!("{:#?}", path);
+                let s = path
+                    .file_stem()
+                    .unwrap_or_else(|| OsStr::new(""))
+                    .to_str()
+                    .unwrap_or("");
                 if !s.ends_with("_i686") {
-                    files.push(s.into()); // .to_string()でいいところを.into()使ってみた
+                    files.push(s.to_string());
                 }
             }
         }
     }
-
-    // files.sort_by(|a, b| a.to_lowercase().cmp(&b.to_lowercase()));
     files.sort_by_cached_key(|a| a.to_lowercase());
     return Ok(files);
 }
@@ -40,11 +44,10 @@ mod tests {
         path: String,
         wants: Vec<String>,
     }
-
     fn build_testcase(path: &str, wants: &[&str]) -> TestCase {
         TestCase {
             path: path.to_string(),
-            wants: wants.iter().map(|x| x.to_string()).collect(),
+            wants: wants.iter().map(std::string::ToString::to_string).collect(),
         }
     }
 
@@ -54,7 +57,6 @@ mod tests {
             build_testcase("./test/1", &["c7", "host1", "R8"]),
             build_testcase("./test/7////", &["R067", "web02"]),
         ];
-
         for case in cases.iter() {
             match ls(&case.path) {
                 Err(e) => panic!("{:?}", e),
