@@ -1,4 +1,5 @@
 use crate::pkg;
+use anyhow::anyhow;
 use anyhow::Result;
 use std::collections::HashSet;
 
@@ -27,6 +28,8 @@ pub fn read_json7(jsonfile: &str) -> Result<Vec<pkg::Pkg>> {
                     let pkg = pkg::build_pkg(&l.name, ver, pkg::ARCH_I686);
                     pkgs.push(pkg);
                 }
+            } else {
+                return Err(anyhow!("Unknown arch. '{}'", l.desc));
             }
         }
     }
