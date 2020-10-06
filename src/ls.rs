@@ -4,9 +4,9 @@ use glob::glob;
 use std::ffi::OsStr;
 use std::path::Path;
 
-pub fn host2file(host: &str, base: &str) -> String {
+pub fn host2file(host: impl Into<String>, base: &str) -> String {
     return Path::new(base)
-        .join(host.to_string() + ".json")
+        .join(host.into() + ".json")
         .display()
         .to_string();
 }

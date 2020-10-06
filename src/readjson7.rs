@@ -1,13 +1,12 @@
 use crate::pkg;
-use anyhow::anyhow;
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use std::collections::HashSet;
 
 fn main2i686(jsonfile: &str) -> String {
     return jsonfile[..jsonfile.len() - 5].to_string() + "_i686.json";
 }
 
-pub fn read_json7(jsonfile: &str) -> Result<Vec<pkg::Pkg>> {
+pub fn read(jsonfile: &str) -> Result<Vec<pkg::Pkg>> {
     let s1 = pkg::read_main_json(jsonfile)?;
 
     let i686 = pkg::read_i686_json(&main2i686(jsonfile))?;
@@ -44,7 +43,7 @@ mod tests {
     #[test]
     fn test_json71() {
         // just read sample data
-        let rc = read_json7("./test/7/web02.json").expect("ERROR");
+        let rc = read("./test/7/web02.json").expect("ERROR");
         println!("{:#?}", rc);
     }
     #[test]

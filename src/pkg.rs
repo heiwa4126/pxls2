@@ -1,6 +1,7 @@
 use anyhow::Result;
 use serde::Deserialize;
 use std::cmp::Ordering;
+use std::fmt;
 use std::fs::File;
 use std::path::Path;
 
@@ -10,6 +11,12 @@ pub struct Pkg {
     pub name: String,
     pub version: String,
     pub arch: String,
+}
+
+impl fmt::Display for Pkg {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}-{}.{}", self.name, self.version, self.arch)
+    }
 }
 
 impl Pkg {
@@ -26,11 +33,11 @@ impl Pkg {
     }
 
     // Associated Functions (関連関数)
-    pub fn new(name: &str, ver: &str, arch: &str) -> Pkg {
+    pub fn new(name: impl Into<String>, ver: impl Into<String>, arch: impl Into<String>) -> Pkg {
         Pkg {
-            name: name.to_string(),
-            version: ver.to_string(),
-            arch: arch.to_string(),
+            name: name.into(),
+            version: ver.into(),
+            arch: arch.into(),
         }
     }
 }

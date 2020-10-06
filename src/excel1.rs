@@ -22,7 +22,8 @@ impl Excel1 {
         let mut sheet = self.wb.create_sheet(host);
         self.wb.write_sheet(&mut sheet, |sw| {
             for v in packages.iter().cloned() {
-                sw.append_row(row![v.name, v.version, v.arch])?
+                let s = format!("{}", &v);
+                sw.append_row(row![v.name, v.version, v.arch, s])?
             }
             Ok(())
         })?;
