@@ -52,14 +52,14 @@ pub fn ver_arch(verarch: &str) -> Option<(&str, &str)> {
             return Some((ver, arch));
         }
     }
-    return None;
+    None
 }
 
 pub fn read_main_json(jsonfile: &str) -> Result<Vec<MainPkg>> {
     let json_file_path = Path::new(jsonfile);
     let file = File::open(json_file_path)?;
     let pkgs: Vec<MainPkg> = serde_json::from_reader(file)?;
-    return Ok(pkgs);
+    Ok(pkgs)
 }
 
 pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
@@ -67,21 +67,42 @@ pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
     let json_file_path = Path::new(jsonfile);
     let file = File::open(json_file_path)?;
     let pkgs: Vec<String> = serde_json::from_reader(file)?;
-    return Ok(pkgs);
+    Ok(pkgs)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    struct TestCase {
+        input: String,
+        wants: (String, String),
+    }
+    fn build_testcase(input: &str, wants1: &str, wants2: &str) -> TestCase {
+        TestCase {
+            input: input.to_string(),
+            wants: (wants1.to_string(), wants2.to_string()),
+        }
+    }
 
     #[test]
     fn test_verarch() {
-        let s = "8-2.el6.noarch";
-        if let Some((ver, arch)) = ver_arch(s) {
-            assert_eq!(ver, "8-2.el6");
-            assert_eq!(arch, "noarch");
-        } else {
-            panic!("ERROR")
+        for tc in [
+            build_testcase("8-2.el6.noarch", "8-2.el6", "noarch"),
+            build_testcase("1:5.3.6.1-24.el7.x86_64", "1:5.3.6.1-24.el7", "x86_64"),
+        ]
+        .iter()
+        {
+            if let Some((ver, arch)) = ver_arch(&tc.input) {
+                assert_eq!(ver, tc.wants.0);
+                assert_eq!(arch, tc.wants.1);
+            } else {
+                panic!("ERROR");
+            }
+        }
+
+        let t9 = build_testcase("1:5.3.6.1-24.el7.ppc", "1:5.3.6.1-24.el7", "ppc");
+        if let Some(_) = ver_arch(&t9.input) {
+            panic!("ERROR");
         }
     }
 }
