@@ -71,7 +71,7 @@ pub fn read_main_json(jsonfile: &str) -> Result<Vec<MainPkg>> {
 }
 
 pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
-    println!("{}", jsonfile);
+    // println!("{}", jsonfile);
     let json_file_path = Path::new(jsonfile);
     let file = File::open(json_file_path)?;
     let pkgs: Vec<String> = serde_json::from_reader(file)?;

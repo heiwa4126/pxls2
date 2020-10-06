@@ -3,7 +3,7 @@ use anyhow::{anyhow, Result};
 use std::collections::HashSet;
 
 fn main2i686(jsonfile: &str) -> String {
-    return jsonfile[..jsonfile.len() - 5].to_string() + "_i686.json";
+    jsonfile[..jsonfile.len() - 5].to_string() + "_i686.json"
 }
 
 pub fn read(jsonfile: &str) -> Result<Vec<pkg::Pkg>> {

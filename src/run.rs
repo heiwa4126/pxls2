@@ -6,7 +6,6 @@ pub fn run(jsondir: &str, excelfile: &str) -> Result<()> {
     if hosts.len() == 0 {
         return Err(anyhow!("No JSON files"));
     }
-
     let mut e1 = excel1::Excel1::new(excelfile);
     for host in hosts {
         let pkgs = readjson7::read(&ls::host2file(&host, jsondir))?;
