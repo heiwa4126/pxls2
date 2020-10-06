@@ -35,7 +35,7 @@ mod tests {
     use super::*;
     #[test]
     fn test_make_dummy_excel() {
-        let mut e1 = new_excel1("./tests/dummy.xlsx");
+        let mut e1 = new_excel1("./tmp/dummy.xlsx");
         e1.make_dummy_execl().expect("ERROR");
         e1.finish().expect("ERROR");
     }

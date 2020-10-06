@@ -72,7 +72,7 @@ Cargo.lock
 !.vscode/extensions.json
 
 /target
-/tests
+/tmp
 **/*.rs.bk
 *.zip
 *.exe
