@@ -22,16 +22,17 @@ impl Pkg {
         if rc != Ordering::Equal {
             return rc;
         }
-        return self.arch.cmp(&b.arch);
+        self.arch.cmp(&b.arch)
     }
-}
 
-pub fn build_pkg(name: &str, ver: &str, arch: &str) -> Pkg {
-    return Pkg {
-        name: name.to_string(),
-        version: ver.to_string(),
-        arch: arch.to_string(),
-    };
+    // Associated Functions (関連関数)
+    pub fn new(name: &str, ver: &str, arch: &str) -> Pkg {
+        Pkg {
+            name: name.to_string(),
+            version: ver.to_string(),
+            arch: arch.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -73,6 +74,7 @@ pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     struct TestCase {
         input: String,
         wants: (String, String),

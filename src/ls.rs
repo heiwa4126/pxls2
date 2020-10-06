@@ -32,7 +32,7 @@ pub fn ls(search_path: &str) -> Result<Vec<String>> {
         }
     }
     files.sort_by_cached_key(|a| a.to_lowercase());
-    return Ok(files);
+    Ok(files)
 }
 
 #[cfg(test)]

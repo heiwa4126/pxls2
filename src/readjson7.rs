@@ -22,10 +22,10 @@ pub fn read_json7(jsonfile: &str) -> Result<Vec<pkg::Pkg>> {
     for l in s1 {
         if let Some(i) = l.desc.find(" from ") {
             if let Some((ver, arch)) = pkg::ver_arch(&l.desc[..i]) {
-                let pkg = pkg::build_pkg(&l.name, ver, arch);
+                let pkg = pkg::Pkg::new(&l.name, ver, arch);
                 pkgs.push(pkg);
                 if arch == pkg::ARCH_X86 && i686.contains(&l.name) {
-                    let pkg = pkg::build_pkg(&l.name, ver, pkg::ARCH_I686);
+                    let pkg = pkg::Pkg::new(&l.name, ver, pkg::ARCH_I686);
                     pkgs.push(pkg);
                 }
             } else {
