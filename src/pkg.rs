@@ -4,12 +4,12 @@ use std::cmp::Ordering;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Pkg {
-    name: String,
-    version: String,
-    arch: String,
+    pub name: String,
+    pub version: String,
+    pub arch: String,
 }
 
 impl Pkg {
@@ -79,18 +79,24 @@ mod tests {
         input: String,
         wants: (String, String),
     }
-    fn build_testcase(input: &str, wants1: &str, wants2: &str) -> TestCase {
-        TestCase {
-            input: input.to_string(),
-            wants: (wants1.to_string(), wants2.to_string()),
+    impl TestCase {
+        pub fn new(
+            input: impl Into<String>,
+            wants1: impl Into<String>,
+            wants2: impl Into<String>,
+        ) -> TestCase {
+            TestCase {
+                input: input.into(),
+                wants: (wants1.into(), wants2.into()),
+            }
         }
     }
 
     #[test]
     fn test_verarch() {
         for tc in [
-            build_testcase("8-2.el6.noarch", "8-2.el6", "noarch"),
-            build_testcase("1:5.3.6.1-24.el7.x86_64", "1:5.3.6.1-24.el7", "x86_64"),
+            TestCase::new("8-2.el6.noarch", "8-2.el6", "noarch"),
+            TestCase::new("1:5.3.6.1-24.el7.x86_64", "1:5.3.6.1-24.el7", "x86_64"),
         ]
         .iter()
         {
@@ -102,7 +108,7 @@ mod tests {
             }
         }
 
-        let t9 = build_testcase("1:5.3.6.1-24.el7.ppc", "1:5.3.6.1-24.el7", "ppc");
+        let t9 = TestCase::new("1:5.3.6.1-24.el7.ppc", "1:5.3.6.1-24.el7", "ppc");
         if let Some(_) = ver_arch(&t9.input) {
             panic!("ERROR");
         }

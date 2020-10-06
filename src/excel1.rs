@@ -1,4 +1,5 @@
 extern crate simple_excel_writer;
+use crate::pkg;
 use anyhow::Result;
 use excel::*;
 use simple_excel_writer as excel;
@@ -17,6 +18,26 @@ impl Excel1 {
         self.wb.close()?;
         Ok(())
     }
+    pub fn add_host(&mut self, host: &str, packages: Vec<pkg::Pkg>) -> Result<()> {
+        let mut sheet = self.wb.create_sheet(host);
+        self.wb.write_sheet(&mut sheet, |sw| {
+            for v in packages.iter().cloned() {
+                sw.append_row(row![v.name, v.version, v.arch])?
+            }
+            Ok(())
+        })?;
+        Ok(())
+    }
+
+    // func (e1 *Excel1) AddHost(host string, packages []Pkg) {
+    // 	e1.f.NewSheet(host)
+    // 	for i, v := range packages {
+    // 		e1.f.SetCellValue(host, fmt.Sprintf("A%d", i+1), v.Name)
+    // 		e1.f.SetCellValue(host, fmt.Sprintf("B%d", i+1), v.Version)
+    // 		e1.f.SetCellValue(host, fmt.Sprintf("C%d", i+1), v.Arch)
+    // 		e1.f.SetCellValue(host, fmt.Sprintf("D%d", i+1), v.ToString())
+    // 	}
+    // }
 
     #[cfg(test)]
     pub fn make_dummy_execl(&mut self) -> Result<()> {

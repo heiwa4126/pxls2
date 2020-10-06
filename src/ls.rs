@@ -43,9 +43,11 @@ mod tests {
         path: String,
         wants: Vec<String>,
     }
-    fn build_testcase(path: &str, wants: &[&str]) -> TestCase {
+    // See https://qiita.com/Kogia_sima/items/6899c5196813cf231054
+    // "impl Into<String>" idiom
+    fn build_testcase(path: impl Into<String>, wants: &[&str]) -> TestCase {
         TestCase {
-            path: path.to_string(),
+            path: path.into(),
             wants: wants.iter().map(std::string::ToString::to_string).collect(),
         }
     }
