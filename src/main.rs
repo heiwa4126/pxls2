@@ -57,7 +57,7 @@ fn main() {
     let rc = if matches.opt_present("y") {
         // yaml mode
         eprintln!("json_dir={}, yaml_file={}", json_dir, out_file);
-        run::run(json_dir, out_file)
+        run::run_yaml(json_dir, out_file)
     } else {
         // normal mode
         eprintln!("json_dir={}, Excel_file={}", json_dir, out_file);

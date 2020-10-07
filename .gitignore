@@ -79,3 +79,4 @@ Cargo.lock
 *.7z
 *.go
 *.xls*
+updates_db.yaml
