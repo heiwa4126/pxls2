@@ -1,4 +1,4 @@
-use crate::{excel1, ls, readjson7};
+use crate::{excel1, ls, pkg, readjson7};
 use anyhow::{anyhow, Result};
 use std::collections::BTreeMap;
 use std::fs::File;
@@ -14,9 +14,7 @@ pub fn run(jsondir: &str, excelfile: &str) -> Result<()> {
         let pkgs = readjson7::read(&ls::host2file(&host, jsondir))?;
         e1.add_host(&host, pkgs)?;
     }
-    e1.finish()?;
-
-    Ok(())
+    e1.finish()
 }
 
 pub fn run_yaml(jsondir: &str, yaml_file: &str) -> Result<()> {
@@ -24,17 +22,18 @@ pub fn run_yaml(jsondir: &str, yaml_file: &str) -> Result<()> {
     if hosts.len() == 0 {
         return Err(anyhow!("No JSON files at '{}'", jsondir));
     }
+
     let mut map = BTreeMap::new();
 
     for host in hosts {
         let pkgs = readjson7::read(&ls::host2file(&host, jsondir))?;
+        let pkgs: Vec<String> = pkgs.iter().map(pkg::Pkg::to_s).collect();
         map.insert(host, pkgs);
     }
 
     let mut f = File::create(yaml_file)?;
     serde_yaml::to_writer(&f, &map)?;
     f.flush()?;
-
     Ok(())
 }
 

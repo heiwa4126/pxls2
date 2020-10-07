@@ -11,11 +11,11 @@ pub fn host2file(host: impl Into<String>, base: &str) -> String {
         .to_string();
 }
 
-pub fn ls(search_path: &str) -> Result<Vec<String>> {
+pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {
     let mut files: Vec<String> = Vec::new();
 
     // pub fn glob(pattern: &str) -> Result<Paths, PatternError>
-    for entry in glob(&(search_path.to_string() + "/*.json"))? {
+    for entry in glob(&(search_path.into() + "/*.json"))? {
         match entry {
             Err(e) => return Err(e.into()), // GlobError
             Ok(path) => {

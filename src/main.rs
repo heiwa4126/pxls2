@@ -65,6 +65,6 @@ fn main() {
     };
 
     if let Err(e) = rc {
-        panic!("{:?}", e);
+        panic!("{}", e);
     }
 }

@@ -15,11 +15,14 @@ pub struct Pkg {
 
 impl fmt::Display for Pkg {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}-{}.{}", self.name, self.version, self.arch)
+        write!(f, "{}", self.to_s())
     }
 }
 
 impl Pkg {
+    pub fn to_s(&self) -> String {
+        format!("{}-{}.{}", self.name, self.version, self.arch)
+    }
     pub fn cmp(&self, b: &Pkg) -> Ordering {
         let rc = self.name.cmp(&b.name);
         if rc != Ordering::Equal {
