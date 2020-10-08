@@ -50,8 +50,8 @@ fn main() -> Result<()> {
     }
 
     // set default value
-    let mut json_dir: &str = "./test/7";
-    let mut out_file: &str = if matches.opt_present("y") {
+    let mut json_dir = "./test/7";
+    let mut out_file = if matches.opt_present("y") {
         "./updates_db.yaml"
     } else {
         "./Book1.xlsx"
