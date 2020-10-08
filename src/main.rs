@@ -1,4 +1,5 @@
 extern crate getopts;
+use anyhow::Result;
 use getopts::Options;
 use pxls2::run;
 use std::env;
@@ -29,7 +30,7 @@ fn print_version() {
     std::process::exit(2);
 }
 
-fn main() {
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let mut opts = Options::new();
     opts.optflag("y", "", "YAMLモード");
@@ -60,7 +61,7 @@ fn main() {
         out_file = &matches.free[1];
     }
 
-    let rc = if matches.opt_present("y") {
+    if matches.opt_present("y") {
         // yaml mode
         eprintln!("json_dir={}, yaml_file={}", json_dir, out_file);
         run::run_yaml(json_dir, out_file)
@@ -68,9 +69,5 @@ fn main() {
         // normal mode
         eprintln!("json_dir={}, Excel_file={}", json_dir, out_file);
         run::run(json_dir, out_file)
-    };
-
-    if let Err(e) = rc {
-        panic!("{}", e);
     }
 }

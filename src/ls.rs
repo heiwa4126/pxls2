@@ -1,5 +1,5 @@
 extern crate glob;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use glob::glob;
 use std::ffi::OsStr;
 use std::path::Path;
@@ -17,7 +17,9 @@ pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {
     // pub fn glob(pattern: &str) -> Result<Paths, PatternError>
     for entry in glob(&(search_path.into() + "/*.json"))? {
         match entry {
-            Err(e) => return Err(e.into()), // GlobError
+            // Err(e) => return Err(e.into()), // GlobError
+            // Err(e) => return Err(Fron::from(e)), // GlobError
+            Err(e) => bail!(e), // GlobError
             Ok(path) => {
                 // println!("{:#?}", path);
                 let s = path
@@ -39,21 +41,21 @@ pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {
 mod tests {
     use super::*;
 
-    struct TestCase {
-        path: String,
-        wants: Vec<String>,
-    }
-    // See https://qiita.com/Kogia_sima/items/6899c5196813cf231054
-    // "impl Into<String>" idiom
-    fn build_testcase(path: impl Into<String>, wants: &[&str]) -> TestCase {
-        TestCase {
-            path: path.into(),
-            wants: wants.iter().map(std::string::ToString::to_string).collect(),
-        }
-    }
-
     #[test]
     fn test_ls() {
+        struct TestCase {
+            path: String,
+            wants: Vec<String>,
+        }
+        // See https://qiita.com/Kogia_sima/items/6899c5196813cf231054
+        // "impl Into<String>" idiom
+        fn build_testcase(path: impl Into<String>, wants: &[&str]) -> TestCase {
+            TestCase {
+                path: path.into(),
+                wants: wants.iter().map(std::string::ToString::to_string).collect(),
+            }
+        }
+
         let cases = [
             build_testcase("./test/1", &["c7", "host1", "R8"]),
             build_testcase("./test/7////", &["R067", "web02"]),
