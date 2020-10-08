@@ -1,13 +1,12 @@
 use crate::{excel1, ls, pkg, readjson7};
-use anyhow::{anyhow, Result};
+use anyhow::{bail, Result};
 use std::collections::BTreeMap;
 use std::fs::File;
-use std::io::Write;
 
 pub fn run(json_dir: &str, excelfile: &str) -> Result<()> {
     let hosts = ls::ls(json_dir)?;
     if hosts.len() == 0 {
-        return Err(anyhow!("No JSON files at '{}'", json_dir));
+        bail!("No JSON files at '{}'", json_dir);
     }
     let mut e1 = excel1::Excel1::new(excelfile);
     for host in hosts {
@@ -20,7 +19,7 @@ pub fn run(json_dir: &str, excelfile: &str) -> Result<()> {
 pub fn run_yaml(json_dir: &str, yaml_file: &str) -> Result<()> {
     let hosts = ls::ls(json_dir)?;
     if hosts.len() == 0 {
-        return Err(anyhow!("No JSON files at '{}'", json_dir));
+        bail!("No JSON files at '{}'", json_dir);
     }
 
     let mut map = BTreeMap::new();
@@ -31,9 +30,8 @@ pub fn run_yaml(json_dir: &str, yaml_file: &str) -> Result<()> {
         map.insert(host, pkgs);
     }
 
-    let mut f = File::create(yaml_file)?;
+    let f = File::create(yaml_file)?;
     serde_yaml::to_writer(&f, &map)?;
-    f.flush()?;
     Ok(())
 }
 

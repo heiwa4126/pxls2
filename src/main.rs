@@ -1,5 +1,5 @@
 extern crate getopts;
-use anyhow::{bail, Result};
+use anyhow::Result;
 use getopts::Options;
 use pxls2::run;
 use std::env;
@@ -37,10 +37,7 @@ fn main() -> Result<()> {
     opts.optflag("h", "help", "ヘルプを表示");
     opts.optflag("v", "version", "バージョンを表示");
 
-    let matches = match opts.parse(&args[1..]) {
-        Ok(m) => m,
-        Err(f) => bail!(f),
-    };
+    let matches = opts.parse(&args[1..])?;
 
     // help & version
     if matches.opt_present("h") {

@@ -1,11 +1,11 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use std::cmp::Ordering;
+use std::cmp::{Ord, Ordering};
 use std::fmt;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialOrd, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Pkg {
     pub name: String,
@@ -19,22 +19,25 @@ impl fmt::Display for Pkg {
     }
 }
 
+impl Ord for Pkg {
+    // #[derive(Ord)]で何が生成されるか自信がない...
+    fn cmp(&self, other: &Self) -> Ordering {
+        let rc = self.name.cmp(&other.name);
+        if rc != Ordering::Equal {
+            return rc;
+        }
+        let rc = self.version.cmp(&other.version);
+        if rc != Ordering::Equal {
+            return rc;
+        }
+        self.arch.cmp(&other.arch)
+    }
+}
+
 impl Pkg {
     pub fn to_s(&self) -> String {
         format!("{}-{}.{}", self.name, self.version, self.arch)
     }
-    pub fn cmp(&self, b: &Pkg) -> Ordering {
-        let rc = self.name.cmp(&b.name);
-        if rc != Ordering::Equal {
-            return rc;
-        }
-        let rc = self.version.cmp(&b.version);
-        if rc != Ordering::Equal {
-            return rc;
-        }
-        self.arch.cmp(&b.arch)
-    }
-
     // Associated Functions (関連関数)
     pub fn new(name: impl Into<String>, ver: impl Into<String>, arch: impl Into<String>) -> Pkg {
         Pkg {
