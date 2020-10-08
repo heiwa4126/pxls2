@@ -1,11 +1,11 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use std::cmp::{Ord, Ordering};
+use std::cmp::Ord;
 use std::fmt;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialOrd, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Ord, Eq, PartialOrd, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Pkg {
     pub name: String,
@@ -19,20 +19,20 @@ impl fmt::Display for Pkg {
     }
 }
 
-impl Ord for Pkg {
-    // #[derive(Ord)]で何が生成されるか自信がない...
-    fn cmp(&self, other: &Self) -> Ordering {
-        let rc = self.name.cmp(&other.name);
-        if rc != Ordering::Equal {
-            return rc;
-        }
-        let rc = self.version.cmp(&other.version);
-        if rc != Ordering::Equal {
-            return rc;
-        }
-        self.arch.cmp(&other.arch)
-    }
-}
+// impl Ord for Pkg {
+//     // #[derive(Ord)]で何が生成されるか自信がない...
+//     fn cmp(&self, other: &Self) -> Ordering {
+//         let rc = self.name.cmp(&other.name);
+//         if rc != Ordering::Equal {
+//             return rc;
+//         }
+//         let rc = self.version.cmp(&other.version);
+//         if rc != Ordering::Equal {
+//             return rc;
+//         }
+//         self.arch.cmp(&other.arch)
+//     }
+// }
 
 impl Pkg {
     pub fn to_s(&self) -> String {
@@ -125,5 +125,16 @@ mod tests {
         if let Some(_) = ver_arch(&t9.input) {
             panic!("ERROR");
         }
+    }
+
+    #[test]
+    fn test_pkg_cmp() {
+        use std::cmp::Ordering;
+        let p1 = Pkg::new("x", "1.0", ARCH_X86);
+        let p2 = Pkg::new("x", "1.0", ARCH_I686);
+        let p3 = Pkg::new("x", "1.0", ARCH_X86);
+        assert_eq!(p2.cmp(&p1), Ordering::Less);
+        assert_eq!(p1.cmp(&p2), Ordering::Greater);
+        assert_eq!(p1.cmp(&p3), Ordering::Equal);
     }
 }
