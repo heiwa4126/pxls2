@@ -1,5 +1,5 @@
 extern crate getopts;
-use anyhow::Result;
+use anyhow::{bail, Result};
 use getopts::Options;
 use pxls2::run;
 use std::env;
@@ -39,19 +39,23 @@ fn main() -> Result<()> {
 
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
-        Err(f) => panic!(f.to_string()),
+        Err(f) => bail!(f),
     };
+
+    // help & version
     if matches.opt_present("h") {
         print_usage(opts);
     } else if matches.opt_present("v") {
         print_version();
     }
 
+    // set default value
     let mut json_dir: &str = "./test/7";
-    let mut out_file: &str = "./Book1.xlsx";
-    if matches.opt_present("y") {
-        out_file = "./updates_db.yaml";
-    }
+    let mut out_file: &str = if matches.opt_present("y") {
+        "./updates_db.yaml"
+    } else {
+        "./Book1.xlsx"
+    };
 
     let argc = matches.free.len();
     if argc >= 1 {

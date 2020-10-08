@@ -4,29 +4,29 @@ use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::Write;
 
-pub fn run(jsondir: &str, excelfile: &str) -> Result<()> {
-    let hosts = ls::ls(jsondir)?;
+pub fn run(json_dir: &str, excelfile: &str) -> Result<()> {
+    let hosts = ls::ls(json_dir)?;
     if hosts.len() == 0 {
-        return Err(anyhow!("No JSON files at '{}'", jsondir));
+        return Err(anyhow!("No JSON files at '{}'", json_dir));
     }
     let mut e1 = excel1::Excel1::new(excelfile);
     for host in hosts {
-        let pkgs = readjson7::read(&ls::host2file(&host, jsondir))?;
+        let pkgs = readjson7::read(&ls::host2file(&host, json_dir))?;
         e1.add_host(&host, pkgs)?;
     }
     e1.finish()
 }
 
-pub fn run_yaml(jsondir: &str, yaml_file: &str) -> Result<()> {
-    let hosts = ls::ls(jsondir)?;
+pub fn run_yaml(json_dir: &str, yaml_file: &str) -> Result<()> {
+    let hosts = ls::ls(json_dir)?;
     if hosts.len() == 0 {
-        return Err(anyhow!("No JSON files at '{}'", jsondir));
+        return Err(anyhow!("No JSON files at '{}'", json_dir));
     }
 
     let mut map = BTreeMap::new();
 
     for host in hosts {
-        let pkgs = readjson7::read(&ls::host2file(&host, jsondir))?;
+        let pkgs = readjson7::read(&ls::host2file(&host, json_dir))?;
         let pkgs: Vec<String> = pkgs.iter().map(pkg::Pkg::to_s).collect();
         map.insert(host, pkgs);
     }
