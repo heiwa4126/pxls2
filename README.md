@@ -13,9 +13,11 @@
 
 # インストール
 
-```
+```sh 
 make release
 sudo cp ./target/release/pxls2 /usr/local/bin
+# ↓おこのみで実行。ディスクの空きが増える
+cargo clean
 ```
 
 # 使い方
