@@ -36,5 +36,6 @@ options:
 
 # TODO
 
-- Makefileが雑すぎるのを直していく
-- Rustのコードの中身もなんとかする。mainが汚い。
+- Makefileが雑すぎるのを直していく。ほんとにtask runnerにしかなってない。
+- Rustのコードの中身もなんとかする。main.rsが特に汚い。
+  cli parserを切り離してかつ拡張しやすくするのが結構めんどうRustの場合。他人のコード読んで学ぶ。

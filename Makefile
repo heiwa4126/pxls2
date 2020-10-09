@@ -7,6 +7,9 @@ test:
 check:
 	cargo check
 
+clean:
+	cargo clean
+
 build:
 	cargo build
 
