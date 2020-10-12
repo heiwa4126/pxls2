@@ -82,8 +82,8 @@ impl Arch {
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn print_typename<T>(_: T) {
-        println!("{}", std::any::type_name::<T>());
+    fn typename<T>(_: T) -> &'static str {
+        std::any::type_name::<T>()
     }
 
     #[test]
@@ -105,10 +105,7 @@ mod tests {
     fn test_arch2err() {
         match Arch::from_str("unknown") {
             Ok(_) => panic!("ERROR"),
-            Err(e) => {
-                print_typename(&e);
-                println!("{}", e)
-            }
+            Err(e) => println!("{}-> {}", typename(&e), e),
         }
     }
 
