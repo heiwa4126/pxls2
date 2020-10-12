@@ -6,9 +6,9 @@ pub struct Arch(u16);
 
 #[derive(Error, Debug)]
 pub enum ArchError {
-    #[error("`{0}` cant parse as Arch")]
+    #[error("`{0}` cant parse as Arch.")]
     ParseError(String),
-    #[error("cant find `.` in `{0}`")]
+    #[error("`{0}` has no period.")]
     NoPriod(String),
 }
 
@@ -64,13 +64,17 @@ impl Arch {
     pub fn to_s(&self) -> &str {
         CNVTBL.1.get(self).unwrap()
     }
+
+    // associates
+
     pub fn from_s(s: &str) -> Option<&Self> {
         CNVTBL.0.get(s)
     }
+
     pub fn from_ends(s: &str) -> Result<&Self, ArchError> {
         match s.rfind('.') {
             None => Err(ArchError::NoPriod(s.to_string())),
-            Some(i) => match Arch::from_s(&s[i + 1..]) {
+            Some(i) => match Self::from_s(&s[i + 1..]) {
                 None => Err(ArchError::ParseError(s.to_string())),
                 Some(s) => Ok(s),
             },
