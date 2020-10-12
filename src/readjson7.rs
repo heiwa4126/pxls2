@@ -1,6 +1,4 @@
-use crate::arch::Arch;
-use crate::pkg;
-use crate::pkg::Pkg;
+use crate::{arch::Arch, pkg, pkg::Pkg};
 use anyhow::{anyhow, Result};
 use std::collections::HashSet;
 
