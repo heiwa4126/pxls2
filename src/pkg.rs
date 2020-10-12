@@ -1,13 +1,12 @@
 use crate::arch::Arch;
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::cmp::Ord;
 use std::fmt;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Ord, Eq, PartialOrd, PartialEq)]
-#[serde(rename_all = "camelCase")]
+#[derive(Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Pkg {
     pub name: String,
     pub version: String,

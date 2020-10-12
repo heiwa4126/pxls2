@@ -1,8 +1,7 @@
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use thiserror::Error;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Arch(u16);
 
 #[derive(Error, Debug)]
