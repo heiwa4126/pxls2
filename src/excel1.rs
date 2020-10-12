@@ -23,7 +23,7 @@ impl Excel1 {
         self.wb.write_sheet(&mut sheet, |sw| {
             for v in packages.iter().cloned() {
                 let s = format!("{}", &v);
-                sw.append_row(row![v.name, v.version, v.arch, s])?
+                sw.append_row(row![v.name, v.version, v.arch.to_s(), s])?
             }
             Ok(())
         })?;

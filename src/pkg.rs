@@ -1,16 +1,18 @@
+use crate::arch::Arch;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ord;
 use std::fmt;
 use std::fs::File;
 use std::path::Path;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Ord, Eq, PartialOrd, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Pkg {
     pub name: String,
     pub version: String,
-    pub arch: String,
+    pub arch: Arch,
 }
 
 impl fmt::Display for Pkg {
@@ -38,12 +40,19 @@ impl Pkg {
     pub fn to_s(&self) -> String {
         format!("{}-{}.{}", self.name, self.version, self.arch)
     }
-    // Associated Functions (関連関数)
-    pub fn new(name: impl Into<String>, ver: impl Into<String>, arch: impl Into<String>) -> Pkg {
+
+    pub fn new(
+        name: impl Into<String>,
+        ver: impl Into<String>,
+        arch: impl Into<String>,
+    ) -> Result<Pkg> {
+        Ok(Pkg::new0(name, ver, FromStr::from_str(&arch.into())?))
+    }
+    pub fn new0(name: impl Into<String>, ver: impl Into<String>, arch: Arch) -> Pkg {
         Pkg {
             name: name.into(),
             version: ver.into(),
-            arch: arch.into(),
+            arch: arch,
         }
     }
 }
@@ -130,11 +139,11 @@ mod tests {
     #[test]
     fn test_pkg_cmp() {
         use std::cmp::Ordering;
-        let p1 = Pkg::new("x", "1.0", ARCH_X86);
-        let p2 = Pkg::new("x", "1.0", ARCH_I686);
-        let p3 = Pkg::new("x", "1.0", ARCH_X86);
-        assert_eq!(p2.cmp(&p1), Ordering::Less);
-        assert_eq!(p1.cmp(&p2), Ordering::Greater);
+        let p1 = Pkg::new("x", "1.0", ARCH_X86).expect("ERROR!");
+        let p2 = Pkg::new("x", "1.0", ARCH_I686).expect("ERROR!");
+        let p3 = Pkg::new("x", "1.0", ARCH_X86).expect("ERROR!");
+        assert_eq!(p1.cmp(&p2), Ordering::Less);
+        assert_eq!(p2.cmp(&p1), Ordering::Greater);
         assert_eq!(p1.cmp(&p3), Ordering::Equal);
     }
 }
