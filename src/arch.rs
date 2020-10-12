@@ -72,13 +72,10 @@ impl Arch {
     }
 
     pub fn from_ends(s: &str) -> Result<&Self, ArchError> {
-        match s.rfind('.') {
-            None => Err(ArchError::NoPriod(s.to_string())),
-            Some(i) => match Self::from_s(&s[i + 1..]) {
-                None => Err(ArchError::ParseError(s.to_string())),
-                Some(s) => Ok(s),
-            },
-        }
+        let i = s
+            .rfind('.')
+            .ok_or_else(|| ArchError::NoPriod(s.to_string()))?;
+        Self::from_s(&s[i + 1..]).ok_or_else(|| ArchError::ParseError(s.to_string()))
     }
 }
 

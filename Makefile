@@ -21,4 +21,4 @@ build:
 release:
 	PKG_REVISION="$$(git rev-parse --short HEAD)" \
 	RUSTFLAGS="-C link-arg=-s" \
-	cargo check --release
+	cargo build --release

@@ -6,7 +6,7 @@ use std::env;
 
 pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");
 pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const PKG_REVISION: Option<&str> = option_env!("PKG_REVISION");
+pub const PKG_REVISION: Option<&'static str> = option_env!("PKG_REVISION");
 
 fn print_usage(opts: Options) {
     let brief = format!(
