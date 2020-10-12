@@ -74,9 +74,10 @@ Cargo.lock
 /target
 /tmp
 **/*.rs.bk
-*.zip
-*.exe
 *.7z
+*.bak
+*.exe
 *.go
 *.xls*
+*.zip
 updates_db.yaml

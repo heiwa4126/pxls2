@@ -13,41 +13,6 @@ pub struct Pkg {
     pub version: String,
     pub arch: Arch,
 }
-
-impl fmt::Display for Pkg {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.to_s())
-    }
-}
-
-// impl Ord for Pkg {
-//     // #[derive(Ord)]で何が生成されるか自信がない...
-//     fn cmp(&self, other: &Self) -> Ordering {
-//         let rc = self.name.cmp(&other.name);
-//         if rc != Ordering::Equal {
-//             return rc;
-//         }
-//         let rc = self.version.cmp(&other.version);
-//         if rc != Ordering::Equal {
-//             return rc;
-//         }
-//         self.arch.cmp(&other.arch)
-//     }
-// }
-
-impl Pkg {
-    pub fn to_s(&self) -> String {
-        format!("{}-{}.{}", self.name, self.version, self.arch)
-    }
-    pub fn new(name: impl Into<String>, ver: impl Into<String>, arch: Arch) -> Pkg {
-        Pkg {
-            name: name.into(),
-            version: ver.into(),
-            arch: arch,
-        }
-    }
-}
-
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MainPkg {
@@ -55,25 +20,46 @@ pub struct MainPkg {
     pub desc: String,
 }
 
-pub fn ver_arch(verarch: &str) -> Result<(&str, Arch)> {
-    let arch = Arch::from_ends(verarch)?;
-    let ver = &verarch[..(verarch.len() - arch.to_s().len()) - 1];
-    Ok((ver, arch.clone()))
+impl fmt::Display for Pkg {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.to_s())
+    }
 }
 
-pub fn read_main_json(jsonfile: &str) -> Result<Vec<MainPkg>> {
-    let json_file_path = Path::new(jsonfile);
-    let file = File::open(json_file_path)?;
-    let pkgs: Vec<MainPkg> = serde_json::from_reader(file)?;
-    Ok(pkgs)
-}
+impl Pkg {
+    pub fn to_s(&self) -> String {
+        format!("{}-{}.{}", self.name, self.version, self.arch)
+    }
 
-pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
-    // println!("{}", jsonfile);
-    let json_file_path = Path::new(jsonfile);
-    let file = File::open(json_file_path)?;
-    let pkgs: Vec<String> = serde_json::from_reader(file)?;
-    Ok(pkgs)
+    // associates
+
+    pub fn new(name: impl Into<String>, ver: impl Into<String>, arch: Arch) -> Pkg {
+        Pkg {
+            name: name.into(),
+            version: ver.into(),
+            arch: arch,
+        }
+    }
+    pub fn ver_arch(verarch: &str) -> Result<(&str, Arch)> {
+        let arch = Arch::from_ends(verarch)?;
+        let ver = &verarch[..(verarch.len() - arch.to_s().len()) - 1];
+        Ok((ver, arch.clone()))
+    }
+
+    pub fn read_main_json(jsonfile: &str) -> Result<Vec<MainPkg>> {
+        let json_file_path = Path::new(jsonfile);
+        let file = File::open(json_file_path)?;
+        let pkgs: Vec<MainPkg> = serde_json::from_reader(file)?;
+        Ok(pkgs)
+    }
+
+    pub fn read_i686_json(jsonfile: &str) -> Result<Vec<String>> {
+        // println!("{}", jsonfile);
+        let json_file_path = Path::new(jsonfile);
+        let file = File::open(json_file_path)?;
+        let pkgs: Vec<String> = serde_json::from_reader(file)?;
+        Ok(pkgs)
+    }
 }
 
 #[cfg(test)]
@@ -101,7 +87,7 @@ mod tests {
         ]
         .iter()
         {
-            if let Ok((ver, arch)) = ver_arch(&tc.input) {
+            if let Ok((ver, arch)) = Pkg::ver_arch(&tc.input) {
                 assert_eq!(ver, tc.wants.0);
                 assert_eq!(arch, tc.wants.1);
             } else {
@@ -110,7 +96,7 @@ mod tests {
         }
 
         let t9 = TestCase::new("1:5.3.6.1-24.el7.ppc", "1:5.3.6.1-24.el7", Arch::X86_64);
-        if let Ok(_) = ver_arch(&t9.input) {
+        if let Ok(_) = Pkg::ver_arch(&t9.input) {
             panic!("ERROR");
         }
     }

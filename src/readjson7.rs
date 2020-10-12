@@ -1,4 +1,4 @@
-use crate::{arch::Arch, pkg, pkg::Pkg};
+use crate::{arch::Arch, pkg::Pkg};
 use anyhow::Result;
 use std::collections::HashSet;
 
@@ -7,16 +7,16 @@ fn main2i686(jsonfile: &str) -> String {
 }
 
 pub fn read(jsonfile: &str) -> Result<Vec<Pkg>> {
-    let s1 = pkg::read_main_json(jsonfile)?;
+    let s1 = Pkg::read_main_json(jsonfile)?;
 
-    let i686 = pkg::read_i686_json(&main2i686(jsonfile))?;
+    let i686 = Pkg::read_i686_json(&main2i686(jsonfile))?;
     let i686: HashSet<_> = i686.iter().collect();
 
     let mut pkgs: Vec<Pkg> = Vec::new();
 
     for l in s1 {
         if let Some(i) = l.desc.find(" from ") {
-            let (ver, arch) = pkg::ver_arch(&l.desc[..i])?;
+            let (ver, arch) = Pkg::ver_arch(&l.desc[..i])?;
             pkgs.push(Pkg::new(&l.name, ver, arch.clone()));
             if arch == Arch::X86_64 && i686.contains(&l.name) {
                 pkgs.push(Pkg::new(&l.name, ver, Arch::I686));
