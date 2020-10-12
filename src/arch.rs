@@ -9,6 +9,8 @@ pub struct Arch(u16);
 pub enum ArchError {
     #[error("`{0}` cant parse as Arch")]
     ParseError(String),
+    #[error("cant find `.` in `{0}`")]
+    NoPriod(String),
 }
 
 impl Clone for Arch {
@@ -44,7 +46,7 @@ lazy_static! {
         let mut f = HashMap::new();
         let mut t = HashMap::new();
         for v in &[
-            (Arch::X86_68, "x86_64"),
+            (Arch::X86_64, "x86_64"),
             (Arch::I686, "i686"),
             (Arch::NOARCH, "noarch"),
         ] {
@@ -56,7 +58,7 @@ lazy_static! {
 }
 
 impl Arch {
-    pub const X86_68: Arch = Arch(0);
+    pub const X86_64: Arch = Arch(0);
     pub const I686: Arch = Arch(1);
     pub const NOARCH: Arch = Arch(2);
 
@@ -66,11 +68,13 @@ impl Arch {
     pub fn from_s(s: &str) -> Option<&Self> {
         CNVTBL.0.get(s)
     }
-    pub fn from_ends(s: &str) -> Option<&Self> {
-        if let Some(i) = s.rfind('.') {
-            Self::from_s(&s[i + 1..])
-        } else {
-            None
+    pub fn from_ends(s: &str) -> Result<&Self, ArchError> {
+        match s.rfind('.') {
+            None => Err(ArchError::NoPriod(s.to_string())),
+            Some(i) => match Arch::from_s(&s[i + 1..]) {
+                None => Err(ArchError::ParseError(s.to_string())),
+                Some(s) => Ok(s),
+            },
         }
     }
 }
@@ -110,7 +114,8 @@ mod tests {
 
     #[test]
     fn test_arch2_fromends() {
-        assert_eq!(Arch::from_ends("test.i686"), Some(&Arch::I686));
-        assert_eq!(Arch::from_ends("test.i386"), None);
+        let rc = Arch::from_ends("test.i686").unwrap_or_else(|e| panic!("{}", e));
+        assert_eq!(rc, &Arch::I686);
+        //assert_eq!(Arch::from_ends("test.i386"), Err(ArchError::ParseError));
     }
 }
