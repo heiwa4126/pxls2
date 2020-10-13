@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use thiserror::Error;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Arch(u16);
 
 #[derive(Error, Debug)]
@@ -87,7 +87,7 @@ mod tests {
     }
 
     #[test]
-    fn test_arch2() {
+    fn test_arch() {
         // let i686 = Arch::I686;
         let i686 = Arch::from_s("i686").unwrap().clone();
         let x86 = FromStr::from_str("x86_64").expect("ERROR!");
@@ -102,7 +102,7 @@ mod tests {
     }
 
     #[test]
-    fn test_arch2err() {
+    fn test_archerr() {
         match Arch::from_str("unknown") {
             Ok(_) => panic!("ERROR"),
             Err(e) => println!("{}-> {}", typename(&e), e),
@@ -110,9 +110,27 @@ mod tests {
     }
 
     #[test]
-    fn test_arch2_fromends() {
+    fn test_arch_fromends() {
         let rc = Arch::from_ends("test.i686").unwrap_or_else(|e| panic!("{}", e));
         assert_eq!(rc, &Arch::I686);
-        //assert_eq!(Arch::from_ends("test.i386"), Err(ArchError::ParseError));
+
+        match Arch::from_ends("test.z80").unwrap_err() {
+            ArchError::ParseError(s) => println!("{}", s),
+            e => panic!("ERROR! {}", e),
+        }
+        match Arch::from_ends("test").unwrap_err() {
+            ArchError::NoPriod(s) => println!("{}", s),
+            e => panic!("ERROR! {}", e),
+        }
+
+        // assert_eq!(Arch::from_ends("test.i386"), Err(ArchError::ParseError));
+    }
+    #[test]
+    fn test_arch_copy() {
+        let a = Arch::I686;
+        let b = a; // copy semantic
+        let c = a.clone();
+        assert_eq!(b, a);
+        assert_eq!(b, c);
     }
 }
