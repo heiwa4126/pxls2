@@ -1,7 +1,6 @@
 extern crate glob;
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
 use glob::glob;
-use std::ffi::OsStr;
 use std::path::Path;
 
 pub fn host2file(host: impl Into<String>, base: &str) -> String {
@@ -14,23 +13,18 @@ pub fn host2file(host: impl Into<String>, base: &str) -> String {
 pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {
     let mut files: Vec<String> = Vec::new();
 
-    // pub fn glob(pattern: &str) -> Result<Paths, PatternError>
     for entry in glob(&(search_path.into() + "/*.json"))? {
-        match entry {
-            // Err(e) => return Err(e.into()), // GlobError
-            // Err(e) => return Err(Fron::from(e)), // GlobError
+        let path = match entry {
             Err(e) => bail!(e), // GlobError
-            Ok(path) => {
-                // println!("{:#?}", path);
-                let s = path
-                    .file_stem()
-                    .unwrap_or_else(|| OsStr::new(""))
-                    .to_str()
-                    .unwrap_or_else(|| "");
-                if !s.ends_with("_i686") {
-                    files.push(s.to_string());
-                }
-            }
+            Ok(t) => t,
+        };
+        let s = path
+            .file_stem()
+            .ok_or_else(|| anyhow!("`{}` has no stem.", path.display()))?
+            .to_str()
+            .ok_or_else(|| anyhow!("`{}` can't convert to UTF8.", path.display()))?;
+        if !s.ends_with("_i686") {
+            files.push(s.to_string());
         }
     }
     files.sort_by_cached_key(|a| a.to_lowercase());
