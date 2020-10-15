@@ -4,7 +4,7 @@ use std::env;
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    let cnf = config::parse_config(&args)?;
+    let cnf = config::parse(&args)?;
 
     if cnf.yaml_mode {
         // yaml mode
@@ -13,6 +13,6 @@ fn main() -> Result<()> {
     } else {
         // normal mode
         eprintln!("json_dir={}, Excel_file={}", cnf.json_dir, cnf.out_file);
-        run::run(&cnf.json_dir, &cnf.out_file)
+        run::run_excel(&cnf.json_dir, &cnf.out_file)
     }
 }

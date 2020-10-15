@@ -34,7 +34,7 @@ pub struct Config {
     pub yaml_mode: bool,
 }
 
-pub fn parse_config(args: &[String]) -> Result<Config> {
+pub fn parse(args: &[String]) -> Result<Config> {
     let mut opts = Options::new();
     opts.optflag("y", "", "YAMLモード");
     opts.optflag("h", "help", "ヘルプを表示");

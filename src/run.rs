@@ -3,7 +3,7 @@ use anyhow::{bail, Result};
 use std::collections::BTreeMap;
 use std::fs::File;
 
-pub fn run(json_dir: &str, excelfile: &str) -> Result<()> {
+pub fn run_excel(json_dir: &str, excelfile: &str) -> Result<()> {
     let hosts = ls::ls(json_dir)?;
     if hosts.len() == 0 {
         bail!("No JSON files at '{}'", json_dir);
@@ -41,7 +41,7 @@ mod tests {
 
     #[test]
     fn test_test7_excel() {
-        if let Err(e) = run("test/7", "tmp/7.xlsx") {
+        if let Err(e) = run_excel("test/7", "tmp/7.xlsx") {
             panic!(e);
         }
     }
