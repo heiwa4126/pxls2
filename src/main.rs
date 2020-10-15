@@ -30,8 +30,13 @@ fn print_version() {
     std::process::exit(2);
 }
 
-fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+struct Config {
+    json_dir: String,
+    out_file: String,
+    yaml_mode: bool,
+}
+
+fn parse_config(args: &[String]) -> Result<Config> {
     let mut opts = Options::new();
     opts.optflag("y", "", "YAMLモード");
     opts.optflag("h", "help", "ヘルプを表示");
@@ -46,9 +51,11 @@ fn main() -> Result<()> {
         print_version();
     }
 
+    let yaml_mode = matches.opt_present("y");
+
     // set default value
     let mut json_dir = "./test/7";
-    let mut out_file = if matches.opt_present("y") {
+    let mut out_file = if yaml_mode {
         "./updates_db.yaml"
     } else {
         "./Book1.xlsx"
@@ -62,13 +69,24 @@ fn main() -> Result<()> {
         out_file = &matches.free[1];
     }
 
-    if matches.opt_present("y") {
+    Ok(Config {
+        json_dir: json_dir.to_string(),
+        out_file: out_file.to_string(),
+        yaml_mode,
+    })
+}
+
+fn main() -> Result<()> {
+    let args: Vec<String> = env::args().collect();
+    let cnf = parse_config(&args)?;
+
+    if cnf.yaml_mode {
         // yaml mode
-        eprintln!("json_dir={}, yaml_file={}", json_dir, out_file);
-        run::run_yaml(json_dir, out_file)
+        eprintln!("json_dir={}, yaml_file={}", &cnf.json_dir, &cnf.out_file);
+        run::run_yaml(&cnf.json_dir, &cnf.out_file)
     } else {
         // normal mode
-        eprintln!("json_dir={}, Excel_file={}", json_dir, out_file);
-        run::run(json_dir, out_file)
+        eprintln!("json_dir={}, Excel_file={}", cnf.json_dir, cnf.out_file);
+        run::run(&cnf.json_dir, &cnf.out_file)
     }
 }
