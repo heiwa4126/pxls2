@@ -5,8 +5,10 @@ use pxls2::{config, run};
 use std::env;
 
 fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
-    let cnf = config::parse(&args)?;
+    let cnf = {
+        let args: Vec<String> = env::args().collect();
+        config::parse(&args)?
+    };
 
     if cnf.yaml_mode {
         // yaml mode
