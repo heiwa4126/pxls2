@@ -4,10 +4,10 @@ use glob::glob;
 use std::path::Path;
 
 pub fn host2file(host: impl Into<String>, base: &str) -> String {
-    return Path::new(base)
+    Path::new(base)
         .join(host.into() + ".json")
         .display()
-        .to_string();
+        .to_string()
 }
 
 pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {

@@ -5,7 +5,7 @@ use std::fs::File;
 
 pub fn run_excel(json_dir: &str, excelfile: &str) -> Result<()> {
     let hosts = ls::ls(json_dir)?;
-    if hosts.len() == 0 {
+    if hosts.is_empty() {
         bail!("No JSON files at '{}'", json_dir);
     }
     let mut e1 = excel1::Excel1::new(excelfile);
@@ -18,7 +18,7 @@ pub fn run_excel(json_dir: &str, excelfile: &str) -> Result<()> {
 
 pub fn run_yaml(json_dir: &str, yaml_file: &str) -> Result<()> {
     let hosts = ls::ls(json_dir)?;
-    if hosts.len() == 0 {
+    if hosts.is_empty() {
         bail!("No JSON files at '{}'", json_dir);
     }
 

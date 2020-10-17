@@ -17,14 +17,15 @@ pub fn read(jsonfile: &str) -> Result<Vec<Pkg>> {
     for l in s1 {
         if let Some(i) = l.desc.find(" from ") {
             let (ver, arch) = Pkg::ver_arch(&l.desc[..i])?;
-            pkgs.push(Pkg::new(&l.name, ver, arch.clone()));
+            pkgs.push(Pkg::new(&l.name, ver, arch));
             if arch == Arch::X86_64 && i686.contains(&l.name) {
                 pkgs.push(Pkg::new(&l.name, ver, Arch::I686));
             }
         }
     }
-    pkgs.sort_by(|a, b| a.cmp(b));
-    return Ok(pkgs);
+
+    pkgs.sort();
+    Ok(pkgs)
 }
 
 #[cfg(test)]

@@ -31,7 +31,7 @@ impl FromStr for Arch {
     type Err = ArchError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match Self::from_s(s) {
-            Some(x) => Ok(x.clone()),
+            Some(x) => Ok(*x),
             None => Err(ArchError::ParseError(s.into())),
         }
     }
@@ -49,8 +49,8 @@ lazy_static! {
             (Arch::I686, "i686"),
             (Arch::NOARCH, "noarch"),
         ] {
-            f.insert(v.1, v.0.clone());
-            t.insert(v.0.clone(), v.1);
+            f.insert(v.1, v.0);
+            t.insert(v.0, v.1);
         }
         (f, t)
     };

@@ -36,13 +36,13 @@ impl Pkg {
         Pkg {
             name: name.into(),
             version: ver.into(),
-            arch: arch,
+            arch,
         }
     }
     pub fn ver_arch(verarch: &str) -> Result<(&str, Arch)> {
         let arch = Arch::from_ends(verarch)?;
         let ver = &verarch[..(verarch.len() - arch.to_s().len()) - 1];
-        Ok((ver, arch.clone()))
+        Ok((ver, *arch))
     }
 
     pub fn read_main_json(jsonfile: &str) -> Result<Vec<MainPkg>> {
