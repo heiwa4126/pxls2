@@ -1,10 +1,9 @@
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
-use anyhow::Result;
 use pxls2::{config, run};
 use std::env;
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     let cnf = {
         let args: Vec<String> = env::args().collect();
         config::parse(&args)?

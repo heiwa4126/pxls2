@@ -1,4 +1,3 @@
-use anyhow::Result;
 use getopts::Options;
 use std::env;
 
@@ -34,7 +33,7 @@ pub struct Config {
     pub yaml_mode: bool,
 }
 
-pub fn parse(args: &[String]) -> Result<Config> {
+pub fn parse(args: &[String]) -> anyhow::Result<Config> {
     let mut opts = Options::new();
     opts.optflag("y", "", "YAMLモード");
     opts.optflag("h", "help", "ヘルプを表示");

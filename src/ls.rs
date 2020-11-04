@@ -11,7 +11,7 @@ pub fn host2file(host: impl Into<String>, base: &str) -> String {
 }
 
 pub fn ls(search_path: impl Into<String>) -> Result<Vec<String>> {
-    let mut files: Vec<String> = Vec::new();
+    let mut files = Vec::<String>::new();
 
     for entry in glob(&(search_path.into() + "/*.json"))? {
         let path = match entry {
